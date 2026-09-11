@@ -1,0 +1,13 @@
+FROM node:23-alpine
+
+WORKDIR /workspace
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD [ "npm", "run", "dev" ]
