@@ -7,12 +7,16 @@ app.use(morgan("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.get("/api/_status/healthz", (req, res) => {
+app.get("/_status/healthz", (req, res) => {
     res.status(200).json({ status: "OK" });
 });
 
-app.get("/api/_status/readyz", (req, res) => {
+app.get("/_status/readyz", (req, res) => {
     res.status(200).json({ status: "Ready" });
 });
+
+import serviceRouter from "./routes/server.routes.js"
+
+app.use("/api/sandbox", serviceRouter)
 
 export default app
