@@ -79,4 +79,39 @@ router.get("/read-files", async (req, res) => {
     })
 })
 
+/**
+ * @route http://sandboxId.agent.localhost/update-files
+ * @method PATCH
+ * @body updates: file, content
+ * @description this route will update the content of the specified files
+ */
+
+router.patch("/update-files", async (req, res) => {
+    
+    const { updates } = req.body
+
+    if (!updates || !Array.isArray(updates)) {
+        return res.status(400).json({
+            message: "Invalid updates format"
+        })
+    }
+
+    const result = await Promise.all(
+        updates.map(async ({ file, content }) => {
+            const filePath = path.join(WORKING_DIR, file)
+            try {
+                await fs.promises.writeFile(filePath, content, "utf-8")
+                return { [filePath.replace(WORKING_DIR, "")]: "File updated successfully" }
+            } catch (err) {
+                return { [filePath.replace(WORKING_DIR, "")]: `error while updating file: ${err.message}` }
+            }
+        })
+    )
+
+    res.status(200).json({
+        message: "Files updated successfully",
+        files: result
+    })
+})
+
 export default router
