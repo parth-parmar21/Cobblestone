@@ -87,7 +87,7 @@ router.get("/read-files", async (req, res) => {
  */
 
 router.patch("/update-files", async (req, res) => {
-    
+
     const { updates } = req.body
 
     if (!updates || !Array.isArray(updates)) {
@@ -110,6 +110,43 @@ router.patch("/update-files", async (req, res) => {
 
     res.status(200).json({
         message: "Files updated successfully",
+        files: result
+    })
+})
+
+/**
+ * @route http://sandboxId.agent.localhost/delete-files?files=filepath
+ * @method DELETE
+ * @body params: files with , seprated
+ * @description this route will delete the specified files
+ */
+
+router.delete("/delete-files", async (req, res) => {
+    const files = req.query.files
+
+    if (!files) {
+        return res.status(400).json({
+            message: "No files specified"
+        })
+    }
+
+    const fileList = files.split(",")
+
+    const result = await Promise.all(
+        fileList.map(async (fileName) => {
+            const filePath = path.join(WORKING_DIR, fileName)
+
+            try {
+                await fs.promises.unlink(filePath)
+                return { [filePath.replace(WORKING_DIR, "")]: "File deleted successfully" }
+            } catch (err) {
+                return { [filePath.replace(WORKING_DIR, "")]: `error while deleting file: ${err.message}` }
+            }
+        })
+    )
+
+    return res.status(200).json({
+        message: "Files deleted successfully",
         files: result
     })
 })
