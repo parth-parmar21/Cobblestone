@@ -6,6 +6,11 @@ const router = Router()
 
 const WORKING_DIR = "/workspace"
 
+/**
+ * @route http://sandboxId.agent.localhost/list-files
+ * @method GET
+ * @description this route will display all the files in the /worksapce folder
+ */
 router.get("/list-files", async (req, res) => {
     const listFiles = async (dir, baseDir) => {
         const entries = await fs.promises.readdir(dir, { withFileTypes: true })
@@ -38,6 +43,40 @@ router.get("/list-files", async (req, res) => {
             error: err.message
         })
     }
+})
+
+/**
+ * @route http://sandboxId.agent.localhost/read-files?files=filepath
+ * @method GET
+ * @description this route will read the content of the specified files
+ */
+router.get("/read-files", async (req, res) => {
+    const files = req.query.files
+
+    if (!files) {
+        return res.status(400).json({
+            message: "No files specified"
+        })
+    }
+
+    const fileList = files.split(",") // files=test1.txt,text2.txt
+
+    const result = await Promise.all(
+        fileList.map(async (fileName) => {
+            const filePath = path.join(WORKING_DIR, fileName)
+            try {
+
+                const content = await fs.promises.readFile(filePath, "utf-8")
+                return { [filePath.replace(WORKING_DIR, "")]: content }
+            } catch (err) {
+                return { [filePath.replace(WORKING_DIR, "")]: `error while reading file: ${err.message}` }
+            }
+        }))
+
+    res.status(200).json({
+        message: "Files read successfully",
+        files: result
+    })
 })
 
 export default router
