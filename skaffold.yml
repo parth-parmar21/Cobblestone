@@ -22,6 +22,11 @@ build:
       docker:
         dockerfile: Dockerfile
 
+    - image: agent
+      context: sandbox/agent
+      docker:
+        dockerfile: Dockerfile
+
 manifests:
   rawYaml:
     - k8s/sandbox-deployment.yml

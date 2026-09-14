@@ -21,10 +21,10 @@ spec:
         resources:
           requests:
             cpu: "250m"
-            memory: "250Mi"
+            memory: "200Mi"
           limits:
             cpu: "500m"
-            memory: "500Mi"
+            memory: "400Mi"
         livenessProbe:
           httpGet:
             path: /_status/healthz
@@ -35,7 +35,7 @@ spec:
           httpGet:
             path: /_status/readyz
             port: 3000
-          initialDelaySeconds: 90
+          initialDelaySeconds: 30
           timeoutSeconds: 10   
         ports:
         - containerPort:  3000
