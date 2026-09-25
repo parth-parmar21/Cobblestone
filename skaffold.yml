@@ -27,6 +27,14 @@ build:
       docker:
         dockerfile: Dockerfile
 
+    - image: ai-orchestration
+      context: ai-orchestration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        infer:
+          - "src/**"
+
 manifests:
   rawYaml:
     - k8s/sandbox-deployment.yml
@@ -35,3 +43,5 @@ manifests:
     - k8s/rbac.yml
     - k8s/router-deployment.yml
     - k8s/router-service.yml
+    - k8s/ai-deployment.yml
+    - k8s/ai-service.yml

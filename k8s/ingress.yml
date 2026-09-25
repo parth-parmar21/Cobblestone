@@ -4,6 +4,10 @@ metadata:
   name: cobblestone-ingress
   labels:
     app.kubernetes.io/name: cobblestone-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "6000"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "6000"
+
 spec:
   ingressClassName: nginx
   rules:
@@ -36,5 +40,15 @@ spec:
         backend:
           service:
             name: router-service
+            port: 
+              number: 80
+
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/api/ai"
+        backend:
+          service:
+            name: ai-service
             port: 
               number: 80

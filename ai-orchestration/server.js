@@ -1,0 +1,6 @@
+import "dotenv/config"
+import app from "./src/app.js"
+import "./src/agent/code.agent.js"
+app.listen(3000, () => {
+    console.log("Ai orchestration server is running on port 3000")
+})
