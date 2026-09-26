@@ -20,7 +20,7 @@ router.post("/invoke", async (req, res) => {
             {
                 messages: [
                     {
-                        role: "User",
+                        role: "human",
                         content: message
                     }
                 ]
@@ -38,11 +38,11 @@ router.post("/invoke", async (req, res) => {
             console.log(chunk);
             res.write(`data: ${chunk}\n\n`)
         }
-
+        writer("\n✅ Agent finished working on your project.\n");
         res.end()   
     } catch (err) {
         console.error(`Error occurred while invoking agent: ${err.message}`);
-        if (res.headersSent()) {
+        if (res.headersSent) {
             res.end();
         } else {
             res.status(500).json({ error: "Internal Server Error" });

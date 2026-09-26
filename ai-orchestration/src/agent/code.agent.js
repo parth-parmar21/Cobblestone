@@ -1,15 +1,14 @@
 import "dotenv/config";
 import { ChatOpenAI } from "@langchain/openai";
+import { ChatGroq } from '@langchain/groq'
 import { createAgent } from "langchain";
 import { listFiles, readFiles, updateFiles } from "./tools.js";
 
-const model = new ChatOpenAI({
-    apiKey: process.env.OPENROUTER_API_KEY,
-    model: "openrouter/free",
-    temperature: 1,
-    configuration: {
-        baseURL: "https://openrouter.ai/api/v1"
-    }
+console.log();
+
+const model = new ChatGroq({
+    apiKey: process.env.GROQ_API_KEY,
+    model: "openai/gpt-oss-120b"
 });
 
 
@@ -20,4 +19,6 @@ export const agent = createAgent({
         readFiles,
         updateFiles
     ]
+}).withConfig({
+    recursionLimit: 30
 })
